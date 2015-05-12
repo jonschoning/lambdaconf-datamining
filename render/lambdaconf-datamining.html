@@ -1695,7 +1695,7 @@ dtype: float64</pre>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes.AxesSubplot at 0x7fdd346aec90&gt;</pre>
+<pre>&lt;matplotlib.axes.AxesSubplot at 0x7f2fbb3db690&gt;</pre>
 </div>
 
 </div>
@@ -4448,12 +4448,24 @@ Bsr/A4uT8VAR6+aJAAAAAElFTkSuQmCC
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Sponsors">Sponsors<a class="anchor-link" href="#Sponsors">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre> 
+<div class=" highlight hl-ipython2"><pre><span class="c"># Set sponsor labels to 0 or 1</span>
+
+<span class="n">survey_sponsors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">survey</span><span class="p">[[</span><span class="s">&quot;SlamData&quot;</span><span class="p">,</span><span class="s">&quot;VictorOps&quot;</span><span class="p">,</span><span class="s">&quot;Keen IO&quot;</span><span class="p">,</span> <span class="s">&quot;BoldRadius&quot;</span><span class="p">,</span> <span class="s">&quot;Elemica&quot;</span><span class="p">]],</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;D&#39;</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -4463,13 +4475,103 @@ Bsr/A4uT8VAR6+aJAAAAAElFTkSuQmCC
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre> 
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">survey_sponsors</span><span class="p">:</span>
+  <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">**** {0} ****&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+  <span class="n">cov_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">survey_sponsors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span>
+              <span class="n">scores</span><span class="p">[</span><span class="n">survey_sponsors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+  <span class="k">print</span> <span class="s">&quot;covariance vs. rest: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cov_score</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+**** D_SlamData ****
+covariance vs. rest: 0.764662677577
+
+**** D_VictorOps ****
+covariance vs. rest: 0.809565965853
+
+**** D_Keen IO ****
+covariance vs. rest: 0.770580611696
+
+**** D_BoldRadius ****
+covariance vs. rest: 0.644291576159
+
+**** D_Elemica ****
+covariance vs. rest: 0.982959241901
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># with a covariance score of 0.64, selection of BoldRadius appears to be more distinctive</span>
+<span class="c"># than not selecting BoldRadius compared to the rest on the survey</span>
+<span class="n">boldradius_scores</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">survey_sponsors</span><span class="p">[</span><span class="s">&quot;D_BoldRadius&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">boldradius_scores</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;**** D_BoldRadius mean scores ****&quot;</span>
+<span class="n">boldradius_scores</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c"># selection of boldradius indicates a higher preference for scala talks</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>**** D_BoldRadius mean scores ****
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt output_prompt">Out[25]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Type Theory and its Meaning Explanations                                   8.272727
+Programs as Values: Pure Composable Database Access in Scala               8.000000
+Scalaz-Streams: A Functional Approach to Compositional, Streaming I/O      7.727273
+The Abstract Method, In General                                            7.636364
+Parametricity: The Essence of Information Hiding                           7.272727
+Computation Expressions in Scala                                           7.272727
+Cats - A Fresh Look at Functional Programming in Scala                     7.181818
+Why I Like Functional Programming                                          7.181818
+Pattern Functors: Wandering Around Fix-points, Free Monads and Generics    7.090909
+Scalaz 102 - Level Up Your Scalaz Foo!                                     7.090909
+The Next Great Functional Programming Language                             7.090909
+Selfish Purity: How Functional Programming Makes Every-Day Jobs Easier     7.000000
+How to Learn Haskell in Less Than 5 Years                                  6.800000
+Programming and Math                                                       6.727273
+Give me Freedom or Forgeddaboutit: What Does &quot;Free&quot; Really Mean?           6.636364
+dtype: float64</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
